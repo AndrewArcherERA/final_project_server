@@ -5,11 +5,12 @@ module.exports = {
     development: {
       client: 'mysql',
       connection: {
-        host: process.env.DB_HOST,
-        port: 3306,
-        user: process.env.DB_USER,
-        password: process.env.DB_PASSWORD,
-        database: process.env.DB_NAME 
+        host: process.env.RDS_HOSTNAME || "awseb-e-au8tfmjzrp-stack-awsebrdsdatabase-qebejutdjc2e.czioauyi8xi5.us-east-1.rds.amazonaws.com",
+        port: process.env.RDS_PORT || 3306,
+        user: process.env.RDS_USERNAME || 'root',
+        password: process.env.RDS_PASSWORD || 'root1234',
+        database: process.env.RDS_DB_NAME || 'ebdb',
+        ssl: process.env.DB_SSL ? {rejectUnauthorized: false} : false
       },
   
       pool:{
@@ -25,11 +26,12 @@ module.exports = {
     production: {
       client: 'mysql',
       connection: {
-        host: process.env.DB_HOST,
-        port: 3306,
-        user: process.env.DB_USER,
-        password: process.env.DB_PASSWORD,
-        database: process.env.DB_NAME 
+        host: process.env.RDS_HOSTNAME || "awseb-e-au8tfmjzrp-stack-awsebrdsdatabase-qebejutdjc2e.czioauyi8xi5.us-east-1.rds.amazonaws.com",
+        port: process.env.RDS_PORT || 3306,
+        user: process.env.RDS_USERNAME || 'root',
+        password: process.env.RDS_PASSWORD || 'root1234',
+        database: process.env.RDS_DB_NAME || 'ebdb',
+        ssl: process.env.DB_SSL ? {rejectUnauthorized: false} : false
       },
   
       pool:{
