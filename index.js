@@ -6,6 +6,7 @@ const config = require('./auth.config');
 
 const authRoute = require('./routes/auth');
 const accountRoute = require('./routes/account');
+const consumerStoreRoute = require('./routes/consumerStore');
 
 app.use(cors());
 app.use(express.json());
@@ -39,6 +40,7 @@ app.use((req, res, next) => {
 
 app.use('/auth', authRoute);
 app.use('/account', accountRoute);
+app.use('/consumerStore', consumerStoreRoute);
 
 
 const PORT = process.env.PORT || 8080;
