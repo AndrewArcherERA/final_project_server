@@ -44,7 +44,7 @@ function updateUserInfo(
     phone,
     company_name,
     user_type,
-    userID,
+    userID
 ) {
     switch (user_type) {
         case "consumer":
@@ -64,15 +64,64 @@ function updateUserInfo(
                 company_name: company_name,
             });
         case "employee":
-            return knex("consumer_employees")
-                .where({ id: userID })
-                .update({
-                    f_name: f_name,
-                    l_name: l_name,
-                    email: email,
-                    phone: phone,
-                });
+            return knex("consumer_employees").where({ id: userID }).update({
+                f_name: f_name,
+                l_name: l_name,
+                email: email,
+                phone: phone,
+            });
     }
 }
 
-module.exports = { getStoredPass, updatePassword, updateUserInfo };
+function createWarehouse(consumer_id, name, street_address, city, state, zip) {
+    return knex("consumer_warehouse_locations")
+        .insert({
+            consumer_id: consumer_id,
+            name: name,
+            street_address: street_address,
+            city: city,
+            state: state,
+            zip: zip,
+        })
+        .then(function () {
+            return knex("consumer_warehouse_locations")
+                .select("*")
+                .where({ consumer_id: consumer_id });
+        });
+}
+
+function getWarehouses(consumer_id) {
+    return knex("consumer_warehouse_locations")
+        .select("*")
+        .where({ consumer_id: consumer_id });
+}
+
+function deleteWarehouse(consumer_id) {
+    return knex("consumer_warehouse_locations")
+        .where({ consumer_id: consumer_id })
+        .del();
+}
+
+function updateWarehouse(consumer_id, name, street_address, city, state, zip) {
+    return knex("consumer_warehouse_locations")
+        .where({ consumer_id: consumer_id })
+        .update({
+            name: name,
+            street_address: street_address,
+            city: city,
+            state: state,
+            zip: zip,
+        }).then(function () {
+            return knex('consumer_warehouse_locations').select('*').where({consumer_id: consumer_id});
+        });
+}
+
+module.exports = {
+    getStoredPass,
+    updatePassword,
+    updateUserInfo,
+    createWarehouse,
+    getWarehouses,
+    deleteWarehouse,
+    updateWarehouse
+};
