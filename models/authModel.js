@@ -39,6 +39,8 @@ async function registerSupplier(
     phone,
     company_name
 ) {
+    const salt = bcrypt.genSaltSync(10);
+    let hashedPass = bcrypt.hashSync(password, salt);
     return knex
         .select("id")
         .from("suppliers")
@@ -49,7 +51,7 @@ async function registerSupplier(
                     f_name: f_name,
                     l_name: l_name,
                     email: email,
-                    password: password,
+                    password: hashedPass,
                     phone: phone,
                     company_name: company_name,
                 });
@@ -65,6 +67,8 @@ async function registerEmployee(
     password,
     store_id
 ) {
+    const salt = bcrypt.genSaltSync(10);
+    let hashedPass = bcrypt.hashSync(password, salt);
     return knex
         .select("id")
         .from("consumer_employees")
@@ -75,7 +79,7 @@ async function registerEmployee(
                     f_name: f_name,
                     l_name: l_name,
                     email: email,
-                    password: password,
+                    password: hashedPass,
                     phone: phone,
                     store_id: store_id,
                 });
@@ -89,24 +93,24 @@ async function signInConsumer(email, password) {
         .from("consumers")
         .where({ email: email })
         .then(function (data) {
-            if(data.length > 0){
+            if (data.length > 0) {
                 const dbPass = data[0].password;
-            let isMatch = bcrypt.compareSync(password, dbPass);
-            if (!isMatch) return null;
-            else {
-                const payload = { ...data[0] };
-                payload.password = undefined;
-                const token = jwt.sign(payload, config.secret);
+                let isMatch = bcrypt.compareSync(password, dbPass);
+                if (!isMatch) return null;
+                else {
+                    const payload = { ...data[0] };
+                    payload.password = undefined;
+                    const token = jwt.sign(payload, config.secret);
 
-                const response = {
-                    status: "Authenticated",
-                    token: token,
-                    ...payload
-                };
+                    const response = {
+                        status: "Authenticated",
+                        token: token,
+                        ...payload,
+                    };
 
-                return response;
-            }
-            }else return null;
+                    return response;
+                }
+            } else return null;
         });
 }
 
@@ -170,5 +174,5 @@ module.exports = {
     registerSupplier,
     signInConsumer,
     signInSupplier,
-    signInEmployee
+    signInEmployee,
 };
