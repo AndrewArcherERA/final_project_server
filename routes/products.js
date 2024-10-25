@@ -88,4 +88,16 @@ router.post('/updateProduct', upload.single("file"), async (req, res) => {
         res.status(500).json(error.message);
     }
 })
+
+router.put('/updateStock', async (req, res) => {
+    try {
+        const {product_id, updated_stock} = req.body;
+
+        await productsModel.updateStock(product_id, updated_stock);
+
+        res.status(201).json({message: `Stock updated`})
+    } catch (error) {
+        res.status(500).json(error.message);
+    }
+})
 module.exports = router;

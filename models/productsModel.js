@@ -86,5 +86,11 @@ async function updateProduct(product_id, num_products_per_unit, price_per_produc
 
 }
 
+function updateStock(product_id, updated_stock) {
+    return knex('products')
+        .update({num_units_available: updated_stock})
+        .where({id: product_id})
+}
 
-module.exports = {createProduct, postImageLink, getAllProducts, updateProduct};
+
+module.exports = {createProduct, postImageLink, getAllProducts, updateProduct, updateStock};

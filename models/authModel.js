@@ -16,7 +16,7 @@ async function registerConsumer(
     return knex
         .select("id")
         .from("consumers")
-        .where({ email: email })
+        .where({email: email})
         .then(function (id) {
             if (id.length === 0)
                 return knex("consumers").insert({
@@ -44,7 +44,7 @@ async function registerSupplier(
     return knex
         .select("id")
         .from("suppliers")
-        .where({ email: email })
+        .where({email: email})
         .then(function (id) {
             if (id.length === 0)
                 return knex("suppliers").insert({
@@ -72,7 +72,7 @@ async function registerEmployee(
     return knex
         .select("id")
         .from("consumer_employees")
-        .where({ email: email })
+        .where({email: email})
         .then(function (id) {
             if (id.length === 0)
                 return knex("consumer_employees").insert({
@@ -89,16 +89,17 @@ async function registerEmployee(
 
 async function signInConsumer(email, password) {
     return knex
-        .select("*")
+        .select("consumers.*", knex.raw('consumer_warehouse_locations.id as warehouse_id'))
         .from("consumers")
-        .where({ email: email })
+        .where({email: email})
+        .leftJoin('consumer_warehouse_locations', 'consumer_warehouse_locations.consumer_id', 'consumers.id')
         .then(function (data) {
             if (data.length > 0) {
                 const dbPass = data[0].password;
                 let isMatch = bcrypt.compareSync(password, dbPass);
                 if (!isMatch) return null;
                 else {
-                    const payload = { ...data[0] };
+                    const payload = {...data[0]};
                     payload.password = undefined;
                     const token = jwt.sign(payload, config.secret);
 
@@ -118,14 +119,14 @@ async function signInSupplier(email, password) {
     return knex
         .select("*")
         .from("suppliers")
-        .where({ email: email })
+        .where({email: email})
         .then(function (data) {
             if (data.length > 0) {
                 const dbPass = data[0].password;
                 let isMatch = bcrypt.compareSync(password, dbPass);
                 if (!isMatch) return null;
                 else {
-                    const payload = { ...data[0] };
+                    const payload = {...data[0]};
                     payload.password = undefined;
                     const token = jwt.sign(payload, config.secret);
 
@@ -143,16 +144,25 @@ async function signInSupplier(email, password) {
 
 async function signInEmployee(email, password) {
     return knex
-        .select("*")
+        .select("consumer_employees.*",
+            knex.raw('consumer_store_locations.name as storeName'),
+            'consumer_store_locations.city',
+            'consumer_store_locations.street_address',
+            'consumer_store_locations.state',
+            'consumer_store_locations.zip',
+            'consumers.company_name'
+        )
         .from("consumer_employees")
-        .where({ email: email })
+        .where('consumer_employees.email', '=', email)
+        .leftJoin('consumer_store_locations', 'consumer_employees.store_id', 'consumer_store_locations.id')
+        .leftJoin('consumers', 'consumer_store_locations.consumer_id', 'consumers.id')
         .then(function (data) {
             if (data.length > 0) {
                 const dbPass = data[0].password;
                 let isMatch = bcrypt.compareSync(password, dbPass);
                 if (!isMatch) return null;
                 else {
-                    const payload = { ...data[0] };
+                    const payload = {...data[0]};
                     payload.password = undefined;
                     const token = jwt.sign(payload, config.secret);
 

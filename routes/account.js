@@ -4,7 +4,7 @@ const model = require("../models/accountModel");
 
 router.get("/getStoredPass/:type/:id", async (req, res) => {
     try {
-        const { type, id } = req.params;
+        const {type, id} = req.params;
         const pass = await model.getStoredPass(type, id);
         res.status(200).json(pass);
     } catch (error) {
@@ -14,7 +14,7 @@ router.get("/getStoredPass/:type/:id", async (req, res) => {
 
 router.put("/updatePassword", async (req, res) => {
     try {
-        const { user_type, userID, newPass } = req.body;
+        const {user_type, userID, newPass} = req.body;
         const updated = await model.updatePassword(user_type, userID, newPass);
         res.status(205).send();
     } catch (error) {
@@ -58,7 +58,7 @@ router.put("/updateUserInfo", async (req, res) => {
 });
 
 router.post("/createWarehouse", async (req, res) => {
-    const { consumer_id, name, street_address, city, state, zip } = req.body;
+    const {consumer_id, name, street_address, city, state, zip} = req.body;
     try {
         let warehouse = await model.createWarehouse(
             consumer_id,
@@ -75,7 +75,7 @@ router.post("/createWarehouse", async (req, res) => {
 });
 
 router.post("/updateWarehouse", async (req, res) => {
-    const { consumer_id, name, street_address, city, state, zip } = req.body;
+    const {consumer_id, name, street_address, city, state, zip} = req.body;
     try {
         let warehouse = await model.updateWarehouse(
             consumer_id,
@@ -91,9 +91,9 @@ router.post("/updateWarehouse", async (req, res) => {
     }
 });
 
-router.get('/getWarehouses/:consumer_id', async (req, res) => {
+router.get('/getWarehouses', async (req, res) => {
     try {
-        const consumer_id = req.params.consumer_id;
+        const consumer_id = req.user.id;
         let warehouses = await model.getWarehouses(consumer_id);
         res.status(200).json(warehouses);
     } catch (error) {

@@ -6,7 +6,11 @@ const config = require('./auth.config');
 const authRoute = require('./routes/auth');
 const accountRoute = require('./routes/account');
 const consumerStoreRoute = require('./routes/consumerStore');
-const productRoute = require('./routes/products')
+const productRoute = require('./routes/products');
+const supplierPageRoute = require('./routes/suppliersPage');
+const cartRouter = require('./routes/cart');
+const orderRouter = require('./routes/orders');
+const inventoryRouter = require('./routes/inventory');
 
 app.use(cors());
 app.use(express.json());
@@ -42,6 +46,10 @@ app.use('/auth', authRoute);
 app.use('/account', accountRoute);
 app.use('/consumerStore', consumerStoreRoute);
 app.use('/products', productRoute);
+app.use('/supplierPage', supplierPageRoute);
+app.use('/cart', cartRouter);
+app.use('/orders', orderRouter);
+app.use('/inventory', inventoryRouter);
 
 
 const PORT = process.env.PORT || 8080;
