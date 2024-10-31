@@ -160,4 +160,34 @@ function createStoreOrder(consumer_id, warehouse_id, store_id, product_id, quant
     })
 }
 
-module.exports = {getConsumerInventory, createStoreOrder, getStoreInventory};
+function deleteProductFromWarehouse(products_id, warehouse_id, consumer_id) {
+    return knex('products_consumer_inventory')
+        .where({warehouse_id: warehouse_id, product_id: products_id})
+        .del()
+        .then(function () {
+            return knex('consumer_store_locations')
+                .select('id')
+                .where({consumer_id: consumer_id})
+        })
+        .then(async function (store_ids) {
+            for await (let store of store_ids) {
+                await knex('products_consumer_inventory_by_store')
+                    .where({store_id: store.id, product_id: products_id})
+                    .del();
+            }
+        })
+}
+
+function deleteProductFromStore(product_id, store_id) {
+    return knex('products_consumer_inventory_by_store')
+        .where({store_id: store_id, product_id: product_id})
+        .del()
+}
+
+module.exports = {
+    getConsumerInventory,
+    createStoreOrder,
+    getStoreInventory,
+    deleteProductFromStore,
+    deleteProductFromWarehouse
+};

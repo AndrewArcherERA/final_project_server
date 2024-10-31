@@ -36,6 +36,25 @@ router.post('/sendToStore', async (req, res) => {
     }
 })
 
+router.post('/deleteProduct', async (req, res) => {
+    const {location_id, product_id, location_type} = req.body;
+    try {
+        switch (location_type) {
+            case 'store':
+                await model.deleteProductFromStore(product_id, location_id);
+                break
+            case 'warehouse':
+                await model.deleteProductFromWarehouse(product_id, location_id, req.user.id);
+                break
+        }
+
+        res.status(204).send();
+    } catch (error) {
+        console.error(error);
+        res.status(500).json(error.message);
+    }
+})
+
 // Would be for a product being purchased from a store || a supply being used up in the creation of a sellable product by a store/warehouse
 // router.post('/useStoreSupply/:location_id/:product_id', async (req, res) => {
 //     const location_id = req.params.location_id;
