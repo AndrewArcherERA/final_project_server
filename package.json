@@ -1,10 +1,10 @@
 {
   "name": "final_project_server",
-  "version": "1.0.0",
+  "version": "3.0.0",
   "description": "API for Material Acquisition Application",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "start": "nodemon index.js"
+    "start": "nodemon server.js"
   },
   "keywords": [],
   "author": "",
