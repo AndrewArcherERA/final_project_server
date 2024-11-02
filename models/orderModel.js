@@ -103,7 +103,7 @@ function getSupplierOrders(supplier_id) {
             knex.raw('consumer_store_locations.zip as storeZip')
         )
         .where({supplier_id: supplier_id})
-        .whereNotNull('orders.delivery_status')
+        .whereNotNull('orders.total_cost')
         .leftJoin('orders', 'orders.product_id', 'products.id')
         .leftJoin('consumers', 'consumers.id', 'orders.consumer_id')
         .leftJoin('consumer_warehouse_locations', 'consumer_warehouse_locations.id', 'orders.warehouse_location')

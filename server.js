@@ -12,6 +12,12 @@ const cartRouter = require('./routes/cart');
 const orderRouter = require('./routes/orders');
 const inventoryRouter = require('./routes/inventory');
 
+// const corsOptions = {
+//     origin: 'https://main.d3mw4ztwi5m60e.amplifyapp.com', // Allow only requests from this origin
+//     methods: 'GET,POST,PUT,DELETE', // Allow only these methods
+//     allowedHeaders: ['Content-Type', 'Authorization', 'multipart/form-data'] // Allow only these headers
+// };
+
 app.use(cors());
 app.use(express.json());
 
@@ -37,11 +43,10 @@ app.use((req, res, next) => {
 });
 
 app.use((req, res, next) => {
-    if (req.path === '/auth/signIn' || req.path === '/auth/register') next();
+    if (req.path === '/auth/signIn' || req.path === '/auth/register' || '/') next();
     else if (!req.user) res.status(401).json({message: 'Please provide a JSON web token to access this route'});
     else next();
 })
-
 app.use('/auth', authRoute);
 app.use('/account', accountRoute);
 app.use('/consumerStore', consumerStoreRoute);
@@ -50,6 +55,9 @@ app.use('/supplierPage', supplierPageRoute);
 app.use('/cart', cartRouter);
 app.use('/orders', orderRouter);
 app.use('/inventory', inventoryRouter);
+app.use('/', (req, res) => {
+    res.status(200).send('Working!')
+})
 
 
 const PORT = process.env.PORT || 8080;
