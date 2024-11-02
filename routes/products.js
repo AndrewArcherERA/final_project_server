@@ -3,7 +3,7 @@ const router = express.Router();
 const productsModel = require("../models/productsModel");
 const ftpModel = require("../models/ftpModel");
 const multer = require("multer");
-const fs = require("fs");
+const fs = require('fs');
 const upload = multer({dest: "uploads/"});
 
 router.post("/createProduct", upload.single("file"), async (req, res) => {
