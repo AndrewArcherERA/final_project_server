@@ -101,10 +101,11 @@ router.get('/getWarehouses', async (req, res) => {
     }
 })
 
-router.delete('/deleteWarehouse/:consumer_id', async (req, res) => {
+router.delete('/deleteWarehouse/:warehouse_id', async (req, res) => {
     try {
-        const consumer_id = req.params.consumer_id;
-        await model.deleteWarehouse(consumer_id);
+        const consumer_id = req.user.id;
+        const warehouse_id = req.params.warehouse_id
+        await model.deleteWarehouse(consumer_id, warehouse_id);
         res.status(200).json({message: "Deleted warehouse successfully"});
     } catch (error) {
         res.status(500).json(error.message);

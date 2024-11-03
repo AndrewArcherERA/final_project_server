@@ -6,17 +6,17 @@ function getStoredPass(user_type, userID) {
             return knex
                 .select("password")
                 .from("consumers")
-                .where({ id: userID });
+                .where({id: userID});
         case "supplier":
             return knex
                 .select("password")
                 .from("suppliers")
-                .where({ id: userID });
+                .where({id: userID});
         case "employee":
             return knex
                 .select("password")
                 .from("consumer_employees")
-                .where({ id: userID });
+                .where({id: userID});
     }
 }
 
@@ -24,16 +24,16 @@ function updatePassword(user_type, userID, newPass) {
     switch (user_type) {
         case "consumer":
             return knex("consumers")
-                .where({ id: userID })
-                .update({ password: newPass });
+                .where({id: userID})
+                .update({password: newPass});
         case "supplier":
             return knex("suppliers")
-                .where({ id: userID })
-                .update({ password: newPass });
+                .where({id: userID})
+                .update({password: newPass});
         case "employee":
             return knex("consumer_employees")
-                .where({ id: userID })
-                .update({ password: newPass });
+                .where({id: userID})
+                .update({password: newPass});
     }
 }
 
@@ -48,7 +48,7 @@ function updateUserInfo(
 ) {
     switch (user_type) {
         case "consumer":
-            return knex("consumers").where({ id: userID }).update({
+            return knex("consumers").where({id: userID}).update({
                 f_name: f_name,
                 l_name: l_name,
                 email: email,
@@ -56,7 +56,7 @@ function updateUserInfo(
                 company_name: company_name,
             });
         case "supplier":
-            return knex("suppliers").where({ id: userID }).update({
+            return knex("suppliers").where({id: userID}).update({
                 f_name: f_name,
                 l_name: l_name,
                 email: email,
@@ -64,7 +64,7 @@ function updateUserInfo(
                 company_name: company_name,
             });
         case "employee":
-            return knex("consumer_employees").where({ id: userID }).update({
+            return knex("consumer_employees").where({id: userID}).update({
                 f_name: f_name,
                 l_name: l_name,
                 email: email,
@@ -86,25 +86,30 @@ function createWarehouse(consumer_id, name, street_address, city, state, zip) {
         .then(function () {
             return knex("consumer_warehouse_locations")
                 .select("*")
-                .where({ consumer_id: consumer_id });
+                .where({consumer_id: consumer_id});
         });
 }
 
 function getWarehouses(consumer_id) {
     return knex("consumer_warehouse_locations")
         .select("*")
-        .where({ consumer_id: consumer_id });
+        .where({consumer_id: consumer_id});
 }
 
-function deleteWarehouse(consumer_id) {
-    return knex("consumer_warehouse_locations")
-        .where({ consumer_id: consumer_id })
-        .del();
+function deleteWarehouse(consumer_id, warehouse_id) {
+    return knex('products_consumer_inventory')
+        .where({warehouse_id: warehouse_id})
+        .del()
+        .then(function () {
+            return knex('consumer_warehouse_locations')
+                .where({id: warehouse_id})
+                .del()
+        })
 }
 
 function updateWarehouse(consumer_id, name, street_address, city, state, zip) {
     return knex("consumer_warehouse_locations")
-        .where({ consumer_id: consumer_id })
+        .where({consumer_id: consumer_id})
         .update({
             name: name,
             street_address: street_address,
